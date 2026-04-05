@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, Platform } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, Platform, Switch } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Colors, Typography } from '../src/constants/theme';
 import { Card } from '../src/components/Card';
 import { Button } from '../src/components/Button';
-import { Check, Droplet, Sun, Moon } from 'lucide-react-native';
+import { Check, Droplet, Sun, Moon, Bell } from 'lucide-react-native';
 
 export default function Settings() {
     const [wakeUpTime, setWakeUpTime] = useState(new Date(new Date().setHours(7, 0, 0, 0)));
     const [sleepTime, setSleepTime] = useState(new Date(new Date().setHours(23, 0, 0, 0)));
     const [showWakePicker, setShowWakePicker] = useState(false);
     const [showSleepPicker, setShowSleepPicker] = useState(false);
+    const [smartReminders, setSmartReminders] = useState(false);
 
     const onWakeTimeChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShowWakePicker(Platform.OS === 'ios');
@@ -98,7 +99,20 @@ export default function Settings() {
                         />
                     )}
                 </Card>
-                <Card><Text style={Typography.body}>Theme Preferences</Text></Card>
+                <Card><View style={styles.row}>
+                    <Bell size={22} color={Colors.primary} strokeWidth={2.5} />
+                    <Text style={Typography.overline}>Smart Reminders</Text>
+                    <Switch
+                        style={{ marginLeft: 'auto' }}
+                        value={smartReminders}
+                        onValueChange={(value) => setSmartReminders(value)}
+                        trackColor={{ false: '#D1D1D1', true: Colors.primary }}
+                        thumbColor={Platform.OS === 'ios' ? undefined : Colors.surface}
+                        ios_backgroundColor="#D1D1D1"
+                    />
+                </View>
+                    <Text style={[Typography.body, { color: Colors.tertiary }]}>You are only notified when your intake lags behind your hourly target by at least 200ml, preventing notification fatigue.</Text>
+                </Card>
             </ScrollView>
 
             <Button
