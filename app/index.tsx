@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Link, Stack } from 'expo-router';
+import { Colors } from '../src/constants/theme';
 
 export default function Home() {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: 'Home' }} />
             <Text style={styles.title}>Water Tracker</Text>
-            <Text>Work in Progress...</Text>
-            <Link href="/settings" style={styles.link}>Go to Settings</Link>
+            <Text style={styles.subtitle}>Seu progresso diário aparecerá aqui.</Text>
+            <Link href="/settings" style={styles.link}>Configurações</Link>
         </View>
     );
 }
@@ -15,18 +16,27 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
+        fontSize: 28,
+        fontFamily: 'PlusJakartaSans_800ExtraBold',
+        color: Colors.primary,
+        marginBottom: 8,
+    },
+    subtitle: {
+        fontSize: 16,
+        fontFamily: 'PlusJakartaSans_400Regular',
+        color: Colors.secondary,
+        marginBottom: 24,
     },
     link: {
-        marginTop: 15,
-        color: 'blue',
+        fontSize: 16,
+        fontFamily: 'PlusJakartaSans_600SemiBold',
+        color: '#528DBD',
+        textDecorationLine: 'underline',
     },
 });
