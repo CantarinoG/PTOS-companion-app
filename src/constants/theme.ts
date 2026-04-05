@@ -35,6 +35,7 @@ export const Typography = {
         fontSize: 16,
         fontFamily: 'PlusJakartaSans_600SemiBold',
         lineHeight: 20,
+        letterSpacing: 1.5,
     },
     overline: {
         fontSize: 12,

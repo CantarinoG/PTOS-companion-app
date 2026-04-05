@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Link, Stack, useRouter } from 'expo-router';
-import { Settings } from 'lucide-react-native';
+import { Stack, useRouter } from 'expo-router';
+import { Settings, PlusCircle } from 'lucide-react-native';
 import { Colors, Typography } from '../src/constants/theme';
+import { Button } from '../src/components/Button';
 
 export default function Home() {
     const router = useRouter();
@@ -40,7 +41,11 @@ export default function Home() {
 
             <View></View>
 
-            <View></View>
+            <Button
+                label="Register Intake"
+                onPress={() => console.log('Register Intake pressed')}
+                icon={<PlusCircle size={22} color={Colors.surface} strokeWidth={2.5} />}
+            />
 
         </View>
     );
