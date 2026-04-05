@@ -1,14 +1,16 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { Settings, PlusCircle } from 'lucide-react-native';
 import { Colors, Typography } from '../src/constants/theme';
 import { Button } from '../src/components/Button';
+import { Card } from '../src/components/Card';
 
 export default function Home() {
     const router = useRouter();
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
             <Stack.Screen
                 options={{
                     title: 'PTOS',
@@ -39,7 +41,22 @@ export default function Home() {
                 <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal 2000ml</Text>
             </View>
 
-            <View></View>
+            <Card style={{ gap: 10 }}>
+                <View style={styles.row}>
+                    <Text style={Typography.overline}>Performance</Text>
+                    <Text style={Typography.overline}>Gap</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={Typography.boldBody}>Behind Schedule</Text>
+                    <Text style={[Typography.boldBody, { color: Colors.deficit }]}>-400ml</Text>
+                </View>
+                <Text>Progress indicator comes here...</Text>
+                <View style={styles.row}>
+                    <Text style={Typography.overline}>Day Start</Text>
+                    <Text style={Typography.overline}>Target</Text>
+                </View>
+            </Card>
+
 
             <Button
                 label="Register Intake"
@@ -47,7 +64,7 @@ export default function Home() {
                 icon={<PlusCircle size={22} color={Colors.surface} strokeWidth={2.5} />}
             />
 
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -77,4 +94,10 @@ const styles = StyleSheet.create({
         bottom: -30,
         right: -10,
     },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+    }
 });

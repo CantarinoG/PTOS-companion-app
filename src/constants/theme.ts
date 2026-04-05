@@ -6,6 +6,9 @@ export const Colors = {
     surface: '#FFFFFF',
     text: '#000000',
     subtext: '#5F5F5F',
+
+    deficit: '#D32F2F',
+    surplus: '#2E7D32',
 };
 
 export const Typography = {
@@ -31,6 +34,11 @@ export const Typography = {
         fontFamily: 'PlusJakartaSans_400Regular',
         lineHeight: 24,
     },
+    boldBody: {
+        fontSize: 20,
+        fontFamily: 'PlusJakartaSans_700Bold',
+        lineHeight: 24,
+    },
     label: {
         fontSize: 16,
         fontFamily: 'PlusJakartaSans_600SemiBold',
@@ -43,6 +51,7 @@ export const Typography = {
         lineHeight: 14,
         letterSpacing: 2,
         textTransform: 'uppercase' as const,
+        color: Colors.secondary,
     },
     caption: {
         fontSize: 12,
