@@ -5,6 +5,7 @@ import { Settings, PlusCircle } from 'lucide-react-native';
 import { Colors, Typography } from '../src/constants/theme';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
+import { ProgressBar } from '../src/components/ProgressBar';
 
 export default function Home() {
     const router = useRouter();
@@ -50,7 +51,13 @@ export default function Home() {
                     <Text style={Typography.boldBody}>Behind Schedule</Text>
                     <Text style={[Typography.boldBody, { color: Colors.deficit }]}>-400ml</Text>
                 </View>
-                <Text>Progress indicator comes here...</Text>
+
+                <ProgressBar
+                    progress={0.35}
+                    goal={0.55}
+                    goalLabel="Goal: 1200ml"
+                />
+
                 <View style={styles.row}>
                     <Text style={Typography.overline}>Day Start</Text>
                     <Text style={Typography.overline}>Target</Text>
