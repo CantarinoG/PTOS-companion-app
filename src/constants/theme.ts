@@ -21,7 +21,7 @@ export const Typography = {
     h1: {
         fontSize: 40,
         fontFamily: 'PlusJakartaSans_800ExtraBold',
-        lineHeight: 44,
+        lineHeight: 50,
         letterSpacing: -1.5,
     },
     h2: {
