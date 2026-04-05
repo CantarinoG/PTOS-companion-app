@@ -13,11 +13,13 @@ export const Typography = {
         fontSize: 64,
         fontFamily: 'PlusJakartaSans_800ExtraBold',
         lineHeight: 72,
+        letterSpacing: -2,
     },
     h1: {
-        fontSize: 36,
+        fontSize: 40,
         fontFamily: 'PlusJakartaSans_800ExtraBold',
         lineHeight: 44,
+        letterSpacing: -1.5,
     },
     h2: {
         fontSize: 24,
@@ -37,8 +39,8 @@ export const Typography = {
     overline: {
         fontSize: 12,
         fontFamily: 'PlusJakartaSans_600SemiBold',
-        lineHeight: 16,
-        letterSpacing: 1.2,
+        lineHeight: 14,
+        letterSpacing: 2,
         textTransform: 'uppercase' as const,
     },
     caption: {
@@ -47,8 +49,9 @@ export const Typography = {
         lineHeight: 16,
     },
     appBarTitle: {
-        fontSize: 18,
+        fontSize: 24,
         fontFamily: 'PlusJakartaSans_800ExtraBold',
         lineHeight: 24,
+        letterSpacing: -1.5,
     },
 };

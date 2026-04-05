@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -9,7 +10,7 @@ import {
     PlusJakartaSans_700Bold,
     PlusJakartaSans_800ExtraBold
 } from '@expo-google-fonts/plus-jakarta-sans';
-import { Colors } from '../src/constants/theme';
+import { Colors, Typography } from '../src/constants/theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,10 +41,19 @@ export default function Layout() {
                 },
                 headerShadowVisible: false,
                 headerTintColor: Colors.primary,
-                headerTitleStyle: {
-                    fontFamily: 'PlusJakartaSans_700Bold',
-                    fontWeight: 'bold',
-                },
+                headerTitle: (props) => (
+                    <Text
+                        style={{
+                            fontFamily: Typography.appBarTitle.fontFamily,
+                            fontSize: Typography.appBarTitle.fontSize,
+                            lineHeight: Typography.appBarTitle.lineHeight,
+                            letterSpacing: Typography.appBarTitle.letterSpacing,
+                            color: Colors.primary,
+                        }}
+                    >
+                        {props.children}
+                    </Text>
+                ),
                 contentStyle: {
                     backgroundColor: Colors.background,
                 }
