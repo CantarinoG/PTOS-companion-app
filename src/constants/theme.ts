@@ -28,6 +28,7 @@ export const Typography = {
         fontSize: 24,
         fontFamily: 'PlusJakartaSans_700Bold',
         lineHeight: 32,
+        letterSpacing: -1.5,
     },
     body: {
         fontSize: 16,

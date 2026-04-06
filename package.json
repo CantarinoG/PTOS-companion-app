@@ -11,6 +11,8 @@
   "dependencies": {
     "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
     "@react-native-community/datetimepicker": "8.4.4",
+    "@react-native-community/slider": "^5.0.1",
+    "android": "^0.0.8",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
     "expo-font": "~14.0.11",

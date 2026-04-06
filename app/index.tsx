@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
-import { Settings, PlusCircle } from 'lucide-react-native';
+import Slider from '@react-native-community/slider';
+import { Settings, PlusCircle, Check } from 'lucide-react-native';
 import { Colors, Typography } from '../src/constants/theme';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
@@ -12,6 +13,7 @@ import { BaseModal } from '../src/components/BaseModal';
 export default function Home() {
     const router = useRouter();
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [amount, setAmount] = useState(250);
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
@@ -78,7 +80,29 @@ export default function Home() {
                 isVisible={isModalVisible}
                 onClose={() => setIsModalVisible(false)}
             >
-                <Text>Modal</Text>
+                <Text style={Typography.overline}>New Entry</Text>
+                <Text style={Typography.h2}>Add Intake</Text>
+                <Text style={[Typography.display, { marginVertical: 16, textAlign: 'center' }]}>{amount}<Text style={Typography.body}>ml</Text></Text>
+                <Slider
+                    minimumValue={50}
+                    maximumValue={1000}
+                    step={50}
+                    value={amount}
+                    onValueChange={setAmount}
+                    minimumTrackTintColor={Colors.primary}
+                    maximumTrackTintColor="rgba(0,0,0,0.1)"
+                    thumbTintColor={Colors.primary}
+                    style={{ width: '100%', height: 40 }}
+                />
+                <View style={[styles.row, { marginBottom: 20 }]}>
+                    <Text style={Typography.overline}>50ml</Text>
+                    <Text style={Typography.overline}>1000ml</Text>
+                </View>
+                <Button
+                    label="Confirm Intake"
+                    onPress={() => setIsModalVisible(false)}
+                    icon={<Check size={22} color={Colors.surface} strokeWidth={2.5} />}
+                />
             </BaseModal>
 
         </SafeAreaView>
