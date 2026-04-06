@@ -7,6 +7,7 @@ import { Colors, Typography } from '../src/constants/theme';
 import { Card } from '../src/components/Card';
 import { Button } from '../src/components/Button';
 import { Check, Droplet, Sun, Moon, Bell } from 'lucide-react-native';
+import * as Notifications from 'expo-notifications';
 import { useSettingsStore } from '../src/modules/settings/settingsStore';
 
 export default function Settings() {
@@ -17,6 +18,27 @@ export default function Settings() {
     const [wakeUpTime, setWakeUpTime] = useState(new Date(store.wakeUpTime));
     const [sleepTime, setSleepTime] = useState(new Date(store.sleepTime));
     const [smartReminders, setSmartReminders] = useState(store.smartReminders);
+
+    const handleNotificationsToggle = async (value: boolean) => {
+        if (value) {
+            const settings = await Notifications.getPermissionsAsync();
+            let isGranted = settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
+
+            if (!isGranted) {
+                const requestType = await Notifications.requestPermissionsAsync();
+                isGranted = requestType.granted || requestType.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
+            }
+
+            if (isGranted) {
+                setSmartReminders(true);
+            } else {
+                alert('Notification permissions are required for smart reminders.');
+                setSmartReminders(false);
+            }
+        } else {
+            setSmartReminders(false);
+        }
+    };
 
     const [showWakePicker, setShowWakePicker] = useState(false);
     const [showSleepPicker, setShowSleepPicker] = useState(false);
@@ -120,7 +142,7 @@ export default function Settings() {
                     <Switch
                         style={{ marginLeft: 'auto' }}
                         value={smartReminders}
-                        onValueChange={(value) => setSmartReminders(value)}
+                        onValueChange={handleNotificationsToggle}
                         trackColor={{ false: '#D1D1D1', true: Colors.primary }}
                         thumbColor={Platform.OS === 'ios' ? undefined : Colors.surface}
                         ios_backgroundColor="#D1D1D1"
