@@ -1,19 +1,47 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, Platform, Switch } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Colors, Typography } from '../src/constants/theme';
 import { Card } from '../src/components/Card';
 import { Button } from '../src/components/Button';
 import { Check, Droplet, Sun, Moon, Bell } from 'lucide-react-native';
+import * as Notifications from 'expo-notifications';
+import { useSettingsStore } from '../src/modules/stores/settingsStore';
 
 export default function Settings() {
-    const [wakeUpTime, setWakeUpTime] = useState(new Date(new Date().setHours(7, 0, 0, 0)));
-    const [sleepTime, setSleepTime] = useState(new Date(new Date().setHours(23, 0, 0, 0)));
+    const store = useSettingsStore();
+    const router = useRouter();
+
+    const [intakeGoal, setIntakeGoal] = useState(store.intakeGoal.toString());
+    const [wakeUpTime, setWakeUpTime] = useState(new Date(store.wakeUpTime));
+    const [sleepTime, setSleepTime] = useState(new Date(store.sleepTime));
+    const [smartReminders, setSmartReminders] = useState(store.smartReminders);
+
+    const handleNotificationsToggle = async (value: boolean) => {
+        if (value) {
+            const settings = await Notifications.getPermissionsAsync();
+            let isGranted = settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
+
+            if (!isGranted) {
+                const requestType = await Notifications.requestPermissionsAsync();
+                isGranted = requestType.granted || requestType.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
+            }
+
+            if (isGranted) {
+                setSmartReminders(true);
+            } else {
+                alert('Notification permissions are required for smart reminders.');
+                setSmartReminders(false);
+            }
+        } else {
+            setSmartReminders(false);
+        }
+    };
+
     const [showWakePicker, setShowWakePicker] = useState(false);
     const [showSleepPicker, setShowSleepPicker] = useState(false);
-    const [smartReminders, setSmartReminders] = useState(false);
 
     const onWakeTimeChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShowWakePicker(Platform.OS === 'ios');
@@ -23,6 +51,14 @@ export default function Settings() {
     const onSleepTimeChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShowSleepPicker(Platform.OS === 'ios');
         if (selectedDate) setSleepTime(selectedDate);
+    };
+
+    const handleSave = () => {
+        store.setIntakeGoal(parseInt(intakeGoal) || 2000);
+        store.setWakeUpTime(wakeUpTime);
+        store.setSleepTime(sleepTime);
+        store.setSmartReminders(smartReminders);
+        router.back();
     };
 
     const formatTime = (date: Date) => {
@@ -52,7 +88,8 @@ export default function Settings() {
                         style={styles.value}
                         placeholder="2000"
                         keyboardType="numeric"
-                        onChangeText={() => null}
+                        value={intakeGoal}
+                        onChangeText={setIntakeGoal}
                     />
                 </Card>
 
@@ -105,7 +142,7 @@ export default function Settings() {
                     <Switch
                         style={{ marginLeft: 'auto' }}
                         value={smartReminders}
-                        onValueChange={(value) => setSmartReminders(value)}
+                        onValueChange={handleNotificationsToggle}
                         trackColor={{ false: '#D1D1D1', true: Colors.primary }}
                         thumbColor={Platform.OS === 'ios' ? undefined : Colors.surface}
                         ios_backgroundColor="#D1D1D1"
@@ -117,7 +154,7 @@ export default function Settings() {
 
             <Button
                 label="Save Changes"
-                onPress={() => console.log('Save Changes pressed')}
+                onPress={handleSave}
                 icon={<Check size={22} color={Colors.surface} strokeWidth={2.5} />}
             />
 
