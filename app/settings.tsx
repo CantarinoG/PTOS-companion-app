@@ -8,7 +8,7 @@ import { Card } from '../src/components/Card';
 import { Button } from '../src/components/Button';
 import { Check, Droplet, Sun, Moon, Bell } from 'lucide-react-native';
 import * as Notifications from 'expo-notifications';
-import { useSettingsStore } from '../src/modules/settings/settingsStore';
+import { useSettingsStore } from '../src/modules/stores/settingsStore';
 
 export default function Settings() {
     const store = useSettingsStore();

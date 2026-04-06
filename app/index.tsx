@@ -9,16 +9,16 @@ import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
 import { ProgressBar } from '../src/components/ProgressBar';
 import { BaseModal } from '../src/components/BaseModal';
-import { useSettingsStore } from '../src/modules/settings/settingsStore';
+import { useSettingsStore } from '../src/modules/stores/settingsStore';
+import { useWaterIntake } from '../src/modules/hooks/useWaterIntake';
 
 export default function Home() {
     const router = useRouter();
     const intakeGoal = useSettingsStore(state => state.intakeGoal);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [amount, setAmount] = useState(250);
+    const { dailyTotal: currentIntake, addIntake } = useWaterIntake();
 
-    // Mocked current intake for now
-    const currentIntake = 800;
     const progress = Math.min(currentIntake / intakeGoal, 1);
 
     return (
@@ -106,7 +106,10 @@ export default function Home() {
                 </View>
                 <Button
                     label="Confirm Intake"
-                    onPress={() => setIsModalVisible(false)}
+                    onPress={() => {
+                        addIntake(amount);
+                        setIsModalVisible(false);
+                    }}
                     icon={<Check size={22} color={Colors.surface} strokeWidth={2.5} />}
                 />
             </BaseModal>
