@@ -9,11 +9,17 @@ import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
 import { ProgressBar } from '../src/components/ProgressBar';
 import { BaseModal } from '../src/components/BaseModal';
+import { useSettingsStore } from '../src/modules/settings/settingsStore';
 
 export default function Home() {
     const router = useRouter();
+    const intakeGoal = useSettingsStore(state => state.intakeGoal);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [amount, setAmount] = useState(250);
+
+    // Mocked current intake for now
+    const currentIntake = 800;
+    const progress = Math.min(currentIntake / intakeGoal, 1);
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
@@ -43,8 +49,8 @@ export default function Home() {
 
             <View style={styles.intake}>
                 <Text style={styles.watermark}>H2O</Text>
-                <Text style={Typography.display}>800 <Text style={Typography.body}>ml</Text></Text>
-                <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal 2000ml</Text>
+                <Text style={Typography.display}>{currentIntake} <Text style={Typography.body}>ml</Text></Text>
+                <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal {intakeGoal}ml</Text>
             </View>
 
             <Card style={{ gap: 10 }}>
@@ -58,7 +64,7 @@ export default function Home() {
                 </View>
 
                 <ProgressBar
-                    progress={0.35}
+                    progress={progress}
                     goal={0.55}
                     goalLabel="Goal: 1200ml"
                 />
