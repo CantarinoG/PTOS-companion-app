@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
@@ -6,9 +7,11 @@ import { Colors, Typography } from '../src/constants/theme';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
 import { ProgressBar } from '../src/components/ProgressBar';
+import { BaseModal } from '../src/components/BaseModal';
 
 export default function Home() {
     const router = useRouter();
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
@@ -67,9 +70,16 @@ export default function Home() {
 
             <Button
                 label="Register Intake"
-                onPress={() => console.log('Register Intake pressed')}
+                onPress={() => setIsModalVisible(true)}
                 icon={<PlusCircle size={22} color={Colors.surface} strokeWidth={2.5} />}
             />
+
+            <BaseModal
+                isVisible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+            >
+                <Text>Modal</Text>
+            </BaseModal>
 
         </SafeAreaView>
     );
