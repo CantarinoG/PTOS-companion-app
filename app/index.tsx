@@ -12,14 +12,41 @@ import { BaseModal } from '../src/components/BaseModal';
 import { useSettingsStore } from '../src/modules/stores/settingsStore';
 import { useWaterIntake } from '../src/modules/hooks/useWaterIntake';
 
+function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpTime: string, sleepTime: string) {
+    const wakeUp = new Date(wakeUpTime);
+    const sleep = new Date(sleepTime);
+    const now = new Date();
+
+    const todayWakeUp = new Date(now.getFullYear(), now.getMonth(), now.getDate(), wakeUp.getHours(), wakeUp.getMinutes());
+    let todaySleep = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sleep.getHours(), sleep.getMinutes());
+
+    if (todaySleep < todayWakeUp) {
+        todaySleep.setDate(todaySleep.getDate() + 1);
+    }
+
+    const totalAwakeMs = todaySleep.getTime() - todayWakeUp.getTime();
+    const msSinceWakeUp = Math.max(0, now.getTime() - todayWakeUp.getTime());
+
+    const timeProgress = Math.min(msSinceWakeUp / totalAwakeMs, 1);
+    const expectedIntake = Math.round(intakeGoal * timeProgress);
+
+    const performanceGap = (currentIntake || 0) - expectedIntake;
+    const isBehind = performanceGap < 0;
+
+    return { timeProgress, expectedIntake, performanceGap, isBehind };
+}
+
 export default function Home() {
     const router = useRouter();
     const intakeGoal = useSettingsStore(state => state.intakeGoal);
+    const wakeUpTime = useSettingsStore(state => state.wakeUpTime);
+    const sleepTime = useSettingsStore(state => state.sleepTime);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [amount, setAmount] = useState(250);
     const { dailyTotal: currentIntake, addIntake } = useWaterIntake();
 
-    const progress = Math.min(currentIntake / intakeGoal, 1);
+    const progress = Math.min((currentIntake || 0) / intakeGoal, 1);
+    const { timeProgress, expectedIntake, performanceGap, isBehind } = calculatePerformance(currentIntake, intakeGoal, wakeUpTime, sleepTime);
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
@@ -59,14 +86,16 @@ export default function Home() {
                     <Text style={Typography.overline}>Gap</Text>
                 </View>
                 <View style={styles.row}>
-                    <Text style={Typography.boldBody}>Behind Schedule</Text>
-                    <Text style={[Typography.boldBody, { color: Colors.deficit }]}>-400ml</Text>
+                    <Text style={Typography.boldBody}>{isBehind ? 'Behind Schedule' : 'Ahead of Schedule'}</Text>
+                    <Text style={[Typography.boldBody, { color: isBehind ? Colors.deficit : Colors.surplus }]}>
+                        {isBehind ? '' : '+'}{performanceGap}ml
+                    </Text>
                 </View>
 
                 <ProgressBar
                     progress={progress}
-                    goal={0.55}
-                    goalLabel="Goal: 1200ml"
+                    goal={timeProgress}
+                    goalLabel={`Goal: ${expectedIntake}ml`}
                 />
 
                 <View style={styles.row}>

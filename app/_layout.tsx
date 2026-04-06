@@ -25,43 +25,48 @@ export default function Layout() {
         PlusJakartaSans_800ExtraBold,
     });
 
-    useEffect(() => {
-        if (loaded || error) {
-            SplashScreen.hideAsync();
-        }
-    }, [loaded, error]);
-
     if (!loaded && !error) {
         return null;
     }
 
     return (
         <SQLiteProvider databaseName="ptos.db" onInit={initializeDatabase}>
-            <Stack
-                screenOptions={{
-                    headerStyle: {
-                        backgroundColor: Colors.background,
-                    },
-                    headerShadowVisible: false,
-                    headerTintColor: Colors.primary,
-                    headerTitle: (props) => (
-                        <Text
-                            style={{
-                                fontFamily: Typography.appBarTitle.fontFamily,
-                                fontSize: Typography.appBarTitle.fontSize,
-                                lineHeight: Typography.appBarTitle.lineHeight,
-                                letterSpacing: Typography.appBarTitle.letterSpacing,
-                                color: Colors.primary,
-                            }}
-                        >
-                            {props.children}
-                        </Text>
-                    ),
-                    contentStyle: {
-                        backgroundColor: Colors.background,
-                    }
-                }}
-            />
+            <MainLayout />
         </SQLiteProvider>
+    );
+}
+
+function MainLayout() {
+    useEffect(() => {
+        // This only runs when both fonts are loaded AND the database is initialized
+        SplashScreen.hideAsync();
+    }, []);
+
+    return (
+        <Stack
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: Colors.background,
+                },
+                headerShadowVisible: false,
+                headerTintColor: Colors.primary,
+                headerTitle: (props) => (
+                    <Text
+                        style={{
+                            fontFamily: Typography.appBarTitle.fontFamily,
+                            fontSize: Typography.appBarTitle.fontSize,
+                            lineHeight: Typography.appBarTitle.lineHeight,
+                            letterSpacing: Typography.appBarTitle.letterSpacing,
+                            color: Colors.primary,
+                        }}
+                    >
+                        {props.children}
+                    </Text>
+                ),
+                contentStyle: {
+                    backgroundColor: Colors.background,
+                }
+            }}
+        />
     );
 }
