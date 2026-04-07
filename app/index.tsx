@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
@@ -11,21 +11,37 @@ import { ProgressBar } from '../src/components/ProgressBar';
 import { BaseModal } from '../src/components/BaseModal';
 import { useSettingsStore } from '../src/modules/stores/settingsStore';
 import { useWaterIntake } from '../src/modules/hooks/useWaterIntake';
+import * as Notifications from 'expo-notifications';
 
-function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpTime: string, sleepTime: string) {
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+    }),
+});
+
+function getScheduleMetrics(wakeUpTime: string, sleepTime: string) {
     const wakeUp = new Date(wakeUpTime);
     const sleep = new Date(sleepTime);
     const now = new Date();
 
     const todayWakeUp = new Date(now.getFullYear(), now.getMonth(), now.getDate(), wakeUp.getHours(), wakeUp.getMinutes());
     let todaySleep = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sleep.getHours(), sleep.getMinutes());
-
     if (todaySleep < todayWakeUp) {
         todaySleep.setDate(todaySleep.getDate() + 1);
     }
 
     const totalAwakeMs = todaySleep.getTime() - todayWakeUp.getTime();
     const msSinceWakeUp = Math.max(0, now.getTime() - todayWakeUp.getTime());
+
+    return { totalAwakeMs, msSinceWakeUp, todaySleep, now };
+}
+
+function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpTime: string, sleepTime: string) {
+    const { totalAwakeMs, msSinceWakeUp } = getScheduleMetrics(wakeUpTime, sleepTime);
+    if (totalAwakeMs <= 0) return { timeProgress: 0, expectedIntake: 0, performanceGap: currentIntake || 0, isBehind: false };
 
     const timeProgress = Math.min(msSinceWakeUp / totalAwakeMs, 1);
     const expectedIntake = Math.round(intakeGoal * timeProgress);
@@ -36,11 +52,57 @@ function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpT
     return { timeProgress, expectedIntake, performanceGap, isBehind };
 }
 
+async function scheduleSmartReminder(
+    currentIntake: number | undefined,
+    intakeGoal: number,
+    wakeUpTime: string,
+    sleepTime: string,
+    smartReminders: boolean,
+    performanceGap: number
+) {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    if (!smartReminders || currentIntake === undefined) return;
+
+    const { totalAwakeMs, todaySleep, now } = getScheduleMetrics(wakeUpTime, sleepTime);
+    if (totalAwakeMs <= 0) return;
+
+    const ratePerMs = intakeGoal / totalAwakeMs;
+
+    if (performanceGap <= -200) return;
+
+    const deltaMs = (performanceGap + 200) / ratePerMs;
+
+    const triggerDate = new Date(now.getTime() + deltaMs);
+
+    if (triggerDate > todaySleep) return;
+    if (triggerDate <= now) return;
+
+    const secondsFromNow = Math.max(1, Math.floor(deltaMs / 1000));
+
+    try {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Time to Hydrate! 💧",
+                body: "You've fallen 200ml behind your water schedule. Grab a quick drink to catch up!",
+            },
+            trigger: {
+                type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+                seconds: secondsFromNow,
+                channelId: 'default'
+            },
+        });
+    } catch (e) {
+        console.error("scheduleSmartReminder: FAILED with error", e);
+    }
+}
+
 export default function Home() {
     const router = useRouter();
     const intakeGoal = useSettingsStore(state => state.intakeGoal);
     const wakeUpTime = useSettingsStore(state => state.wakeUpTime);
     const sleepTime = useSettingsStore(state => state.sleepTime);
+    const smartReminders = useSettingsStore(state => state.smartReminders);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [amount, setAmount] = useState(250);
     const { dailyTotal: currentIntake, addIntake } = useWaterIntake();
@@ -136,6 +198,9 @@ export default function Home() {
                 <Button
                     label="Confirm Intake"
                     onPress={() => {
+                        const newIntake = (currentIntake || 0) + amount;
+                        const newGap = performanceGap + amount;
+                        scheduleSmartReminder(newIntake, intakeGoal, wakeUpTime, sleepTime, smartReminders, newGap);
                         addIntake(amount);
                         setIsModalVisible(false);
                     }}
