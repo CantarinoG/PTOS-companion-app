@@ -38,7 +38,6 @@ export default function Layout() {
 
 function MainLayout() {
     useEffect(() => {
-        // This only runs when both fonts are loaded AND the database is initialized
         SplashScreen.hideAsync();
     }, []);
 
@@ -67,6 +66,8 @@ function MainLayout() {
                     backgroundColor: Colors.background,
                 }
             }}
-        />
+        >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
     );
 }

@@ -4,13 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { Settings, PlusCircle, Check } from 'lucide-react-native';
-import { Colors, Typography } from '../src/constants/theme';
-import { Button } from '../src/components/Button';
-import { Card } from '../src/components/Card';
-import { ProgressBar } from '../src/components/ProgressBar';
-import { BaseModal } from '../src/components/BaseModal';
-import { useSettingsStore } from '../src/modules/stores/settingsStore';
-import { useWaterIntake } from '../src/modules/hooks/useWaterIntake';
+import { Colors, Typography } from '../../src/constants/theme';
+import { Button } from '../../src/components/Button';
+import { Card } from '../../src/components/Card';
+import { ProgressBar } from '../../src/components/ProgressBar';
+import { BaseModal } from '../../src/components/BaseModal';
+import { useSettingsStore } from '../../src/modules/stores/settingsStore';
+import { useWaterIntake } from '../../src/modules/hooks/useWaterIntake';
 import * as Notifications from 'expo-notifications';
 
 Notifications.setNotificationHandler({
@@ -97,7 +97,7 @@ async function scheduleSmartReminder(
     }
 }
 
-export default function Home() {
+export default function WaterIntake() {
     const router = useRouter();
     const intakeGoal = useSettingsStore(state => state.intakeGoal);
     const wakeUpTime = useSettingsStore(state => state.wakeUpTime);

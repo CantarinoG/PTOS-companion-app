@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "PTOS",
+    "name": "PTOS Dev",
     "slug": "PTOS-companion-app",
     "scheme": "ptos-companion-app",
     "version": "0.0.0",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.PTOScompanionapp"
+      "bundleIdentifier": "com.anonymous.PTOScompanionapp.dev"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +25,7 @@
       "primaryColor": "#000000",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.PTOScompanionapp"
+      "package": "com.anonymous.PTOScompanionapp.dev"
     },
     "web": {
       "favicon": "./assets/favicon.png"
