@@ -18,6 +18,12 @@ export const Typography = {
         lineHeight: 72,
         letterSpacing: -2,
     },
+    display2: {
+        fontSize: 40,
+        fontFamily: 'PlusJakartaSans_800ExtraBold',
+        lineHeight: 50,
+        letterSpacing: -1.5,
+    },
     h1: {
         fontSize: 40,
         fontFamily: 'PlusJakartaSans_800ExtraBold',

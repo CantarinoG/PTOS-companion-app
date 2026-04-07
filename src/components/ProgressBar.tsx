@@ -31,9 +31,11 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
                 {clampedGoal !== undefined && (
                     <View style={[styles.goalContainer, { left: `${clampedGoal * 100}%` }]}>
                         <View style={styles.goalMarker} />
-                        {goalLabel && (
-                            <Text style={styles.goalLabel}>{goalLabel}</Text>
-                        )}
+                    </View>
+                )}
+                {goalLabel && clampedGoal !== undefined && (
+                    <View style={[styles.goalLabelContainer, { left: `${clampedGoal * 100}%` }]}>
+                        <Text style={styles.goalLabel}>{goalLabel}</Text>
                     </View>
                 )}
             </View>
@@ -69,8 +71,8 @@ const styles = StyleSheet.create({
     goalContainer: {
         position: 'absolute',
         alignItems: 'center',
-        width: 100,
-        marginLeft: -50,
+        width: 2,
+        marginLeft: -1,
         top: -6,
     },
     goalMarker: {
@@ -78,6 +80,13 @@ const styles = StyleSheet.create({
         height: 16,
         backgroundColor: Colors.primary,
         borderRadius: 1,
+    },
+    goalLabelContainer: {
+        position: 'absolute',
+        alignItems: 'center',
+        width: 100,
+        marginLeft: -50,
+        top: 10,
     },
     goalLabel: {
         marginTop: 4,
