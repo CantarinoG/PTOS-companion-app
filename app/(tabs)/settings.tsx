@@ -58,7 +58,6 @@ export default function Settings() {
         store.setWakeUpTime(wakeUpTime);
         store.setSleepTime(sleepTime);
         store.setSmartReminders(smartReminders);
-        // Removed router.back() as it's now a tab
     };
 
     const formatTime = (date: Date) => {
@@ -67,7 +66,7 @@ export default function Settings() {
 
 
     return (
-        <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+        <SafeAreaView style={styles.container} edges={['left', 'right']}>
             <Stack.Screen options={{ title: 'PTOS' }} />
 
             <View style={styles.hero}>
@@ -148,7 +147,7 @@ export default function Settings() {
                         ios_backgroundColor="#D1D1D1"
                     />
                 </View>
-                    <Text style={[Typography.body, { color: Colors.tertiary }]}>You are only notified when your intake lags behind your hourly target by at least 200ml, preventing notification fatigue.</Text>
+                    <Text style={[Typography.body, { color: Colors.subtext }]}>You are only notified when your intake lags behind your hourly target by at least 200ml, preventing notification fatigue.</Text>
                 </Card>
             </ScrollView>
 

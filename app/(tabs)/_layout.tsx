@@ -19,7 +19,7 @@ export default function TabLayout() {
                     fontSize: Typography.appBarTitle.fontSize,
                 },
                 tabBarActiveTintColor: Colors.primary,
-                tabBarInactiveTintColor: Colors.subtext,
+                tabBarInactiveTintColor: Colors.tertiary,
                 tabBarStyle: {
                     backgroundColor: Colors.surface,
                     borderTopWidth: 0,

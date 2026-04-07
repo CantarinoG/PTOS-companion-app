@@ -6,7 +6,7 @@ import { Colors, Typography } from '../../src/constants/theme';
 
 export default function MacroIntake() {
     return (
-        <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+        <SafeAreaView style={styles.container} edges={['left', 'right']}>
             <Stack.Screen options={{ title: 'Macros' }} />
             <Text style={Typography.h1}>Macro Intake</Text>
         </SafeAreaView>

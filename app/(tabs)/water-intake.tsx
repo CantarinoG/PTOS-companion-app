@@ -110,7 +110,7 @@ export default function WaterIntake() {
     const { timeProgress, expectedIntake, performanceGap, isBehind } = calculatePerformance(currentIntake, intakeGoal, wakeUpTime, sleepTime);
 
     return (
-        <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+        <SafeAreaView style={styles.container} edges={['left', 'right']}>
             <Stack.Screen
                 options={{
                     title: 'PTOS',
