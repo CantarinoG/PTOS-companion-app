@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { PlusCircle, Check } from 'lucide-react-native';
 import { Colors, Typography } from '../../src/constants/theme';

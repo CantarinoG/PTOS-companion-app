@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { Colors, Typography } from '../../src/constants/theme';
 import { Button } from '../../src/components/Button';
-import { PlusCircle, Wheat, Beef, Droplets } from 'lucide-react-native';
+import { PlusCircle, Wheat, Beef, Droplets, Check } from 'lucide-react-native';
 import { Card } from '../../src/components/Card';
 import { ProgressBar } from '../../src/components/ProgressBar';
+import { BaseModal } from '../../src/components/BaseModal';
 
 export default function MacroIntake() {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right']}>
             <Stack.Screen options={{ title: 'Macros' }} />
@@ -61,9 +64,24 @@ export default function MacroIntake() {
 
             <Button
                 label="Register Intake"
-                onPress={() => { }}
+                onPress={() => setIsModalVisible(true)}
                 icon={<PlusCircle size={22} color={Colors.surface} strokeWidth={2.5} />}
             />
+
+            <BaseModal
+                isVisible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+            >
+                <Text style={Typography.overline}>New Entry</Text>
+                <Text style={Typography.h2}>Describe your meal</Text>
+                <Button
+                    label="Confirm Intake"
+                    onPress={() => {
+                        setIsModalVisible(false);
+                    }}
+                    icon={<Check size={22} color={Colors.surface} strokeWidth={2.5} />}
+                />
+            </BaseModal>
 
         </SafeAreaView>
     );
