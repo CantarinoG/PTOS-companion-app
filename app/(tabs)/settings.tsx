@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, Platform, Switch } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
+import Toast from 'react-native-root-toast';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Colors, Typography } from '../../src/constants/theme';
@@ -58,6 +59,20 @@ export default function Settings() {
         store.setWakeUpTime(wakeUpTime);
         store.setSleepTime(sleepTime);
         store.setSmartReminders(smartReminders);
+
+        Toast.show('Settings saved successfully', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: false,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+            backgroundColor: Colors.primary,
+            textColor: Colors.surface,
+            textStyle: {
+                fontFamily: 'PlusJakartaSans_600SemiBold',
+            }
+        });
     };
 
     const formatTime = (date: Date) => {
