@@ -13,20 +13,35 @@ import { useSettingsStore } from '../src/modules/stores/settingsStore';
 import { useWaterIntake } from '../src/modules/hooks/useWaterIntake';
 import * as Notifications from 'expo-notifications';
 
-function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpTime: string, sleepTime: string) {
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+    }),
+});
+
+function getScheduleMetrics(wakeUpTime: string, sleepTime: string) {
     const wakeUp = new Date(wakeUpTime);
     const sleep = new Date(sleepTime);
     const now = new Date();
 
     const todayWakeUp = new Date(now.getFullYear(), now.getMonth(), now.getDate(), wakeUp.getHours(), wakeUp.getMinutes());
     let todaySleep = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sleep.getHours(), sleep.getMinutes());
-
     if (todaySleep < todayWakeUp) {
         todaySleep.setDate(todaySleep.getDate() + 1);
     }
 
     const totalAwakeMs = todaySleep.getTime() - todayWakeUp.getTime();
     const msSinceWakeUp = Math.max(0, now.getTime() - todayWakeUp.getTime());
+
+    return { totalAwakeMs, msSinceWakeUp, todaySleep, now };
+}
+
+function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpTime: string, sleepTime: string) {
+    const { totalAwakeMs, msSinceWakeUp } = getScheduleMetrics(wakeUpTime, sleepTime);
+    if (totalAwakeMs <= 0) return { timeProgress: 0, expectedIntake: 0, performanceGap: currentIntake || 0, isBehind: false };
 
     const timeProgress = Math.min(msSinceWakeUp / totalAwakeMs, 1);
     const expectedIntake = Math.round(intakeGoal * timeProgress);
@@ -35,6 +50,51 @@ function calculatePerformance(currentIntake: number, intakeGoal: number, wakeUpT
     const isBehind = performanceGap < 0;
 
     return { timeProgress, expectedIntake, performanceGap, isBehind };
+}
+
+async function scheduleSmartReminder(
+    currentIntake: number | undefined,
+    intakeGoal: number,
+    wakeUpTime: string,
+    sleepTime: string,
+    smartReminders: boolean,
+    performanceGap: number
+) {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    if (!smartReminders || currentIntake === undefined) return;
+
+    const { totalAwakeMs, todaySleep, now } = getScheduleMetrics(wakeUpTime, sleepTime);
+    if (totalAwakeMs <= 0) return;
+
+    const ratePerMs = intakeGoal / totalAwakeMs;
+
+    if (performanceGap <= -200) return;
+
+    const deltaMs = (performanceGap + 200) / ratePerMs;
+
+    const triggerDate = new Date(now.getTime() + deltaMs);
+
+    if (triggerDate > todaySleep) return;
+    if (triggerDate <= now) return;
+
+    const secondsFromNow = Math.max(1, Math.floor(deltaMs / 1000));
+
+    try {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Time to Hydrate! 💧",
+                body: "You've fallen 200ml behind your water schedule. Grab a quick drink to catch up!",
+            },
+            trigger: {
+                type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+                seconds: secondsFromNow,
+                channelId: 'default'
+            },
+        });
+    } catch (e) {
+        console.error("scheduleSmartReminder: FAILED with error", e);
+    }
 }
 
 export default function Home() {
@@ -49,49 +109,6 @@ export default function Home() {
 
     const progress = Math.min((currentIntake || 0) / intakeGoal, 1);
     const { timeProgress, expectedIntake, performanceGap, isBehind } = calculatePerformance(currentIntake, intakeGoal, wakeUpTime, sleepTime);
-
-    useEffect(() => {
-        async function scheduleReminder() {
-            await Notifications.cancelAllScheduledNotificationsAsync();
-
-            if (!smartReminders || currentIntake === undefined) return;
-
-            const wakeUp = new Date(wakeUpTime);
-            const sleep = new Date(sleepTime);
-            const now = new Date();
-
-            const todayWakeUp = new Date(now.getFullYear(), now.getMonth(), now.getDate(), wakeUp.getHours(), wakeUp.getMinutes());
-            let todaySleep = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sleep.getHours(), sleep.getMinutes());
-            if (todaySleep < todayWakeUp) {
-                todaySleep.setDate(todaySleep.getDate() + 1);
-            }
-
-            const totalAwakeMs = todaySleep.getTime() - todayWakeUp.getTime();
-            if (totalAwakeMs <= 0) return;
-
-            const ratePerMs = intakeGoal / totalAwakeMs;
-
-            if (performanceGap <= -200) return;
-
-            const deltaMs = (performanceGap + 200) / ratePerMs;
-            const triggerDate = new Date(now.getTime() + deltaMs);
-
-            if (triggerDate > todaySleep || triggerDate <= now) return;
-
-            await Notifications.scheduleNotificationAsync({
-                content: {
-                    title: "Time to Hydrate! 💧",
-                    body: "You've fallen 200ml behind your water schedule. Grab a quick drink to catch up!",
-                },
-                trigger: {
-                    type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: triggerDate
-                },
-            });
-        }
-
-        scheduleReminder();
-    }, [currentIntake, intakeGoal, wakeUpTime, sleepTime, smartReminders, performanceGap]);
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
@@ -181,6 +198,9 @@ export default function Home() {
                 <Button
                     label="Confirm Intake"
                     onPress={() => {
+                        const newIntake = (currentIntake || 0) + amount;
+                        const newGap = performanceGap + amount;
+                        scheduleSmartReminder(newIntake, intakeGoal, wakeUpTime, sleepTime, smartReminders, newGap);
                         addIntake(amount);
                         setIsModalVisible(false);
                     }}
