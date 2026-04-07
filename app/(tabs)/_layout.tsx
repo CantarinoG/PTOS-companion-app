@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Droplet, Utensils } from 'lucide-react-native';
+import { Droplet, Utensils, Settings } from 'lucide-react-native';
 import { Colors, Typography } from '../../src/constants/theme';
 
 export default function TabLayout() {
@@ -46,6 +46,14 @@ export default function TabLayout() {
                     title: 'Water',
                     tabBarLabel: 'Water',
                     tabBarIcon: ({ color }) => <Droplet size={24} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="settings"
+                options={{
+                    title: 'Settings',
+                    tabBarLabel: 'Settings',
+                    tabBarIcon: ({ color }) => <Settings size={22} color={color} />,
                 }}
             />
         </Tabs>

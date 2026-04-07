@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
-import { Settings, PlusCircle, Check } from 'lucide-react-native';
+import { PlusCircle, Check } from 'lucide-react-native';
 import { Colors, Typography } from '../../src/constants/theme';
 import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
@@ -98,7 +98,6 @@ async function scheduleSmartReminder(
 }
 
 export default function WaterIntake() {
-    const router = useRouter();
     const intakeGoal = useSettingsStore(state => state.intakeGoal);
     const wakeUpTime = useSettingsStore(state => state.wakeUpTime);
     const sleepTime = useSettingsStore(state => state.sleepTime);
@@ -115,19 +114,6 @@ export default function WaterIntake() {
             <Stack.Screen
                 options={{
                     title: 'PTOS',
-                    headerRight: () => (
-                        <Pressable
-                            onPress={() => {
-                                router.push('/settings');
-                            }}
-                            style={({ pressed }) => ({
-                                opacity: pressed ? 0.5 : 1,
-                                marginRight: 10,
-                            })}
-                        >
-                            <Settings size={22} color={Colors.primary} />
-                        </Pressable>
-                    ),
                 }}
             />
 

@@ -3,12 +3,12 @@ import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, Platform, Swi
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Colors, Typography } from '../src/constants/theme';
-import { Card } from '../src/components/Card';
-import { Button } from '../src/components/Button';
+import { Colors, Typography } from '../../src/constants/theme';
+import { Card } from '../../src/components/Card';
+import { Button } from '../../src/components/Button';
 import { Check, Droplet, Sun, Moon, Bell } from 'lucide-react-native';
 import * as Notifications from 'expo-notifications';
-import { useSettingsStore } from '../src/modules/stores/settingsStore';
+import { useSettingsStore } from '../../src/modules/stores/settingsStore';
 
 export default function Settings() {
     const store = useSettingsStore();
@@ -58,7 +58,7 @@ export default function Settings() {
         store.setWakeUpTime(wakeUpTime);
         store.setSleepTime(sleepTime);
         store.setSmartReminders(smartReminders);
-        router.back();
+        // Removed router.back() as it's now a tab
     };
 
     const formatTime = (date: Date) => {
