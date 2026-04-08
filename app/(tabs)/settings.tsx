@@ -14,11 +14,12 @@ import { useSettingsStore } from '../../src/modules/stores/settingsStore';
 export default function Settings() {
     const store = useSettingsStore();
 
-    const [caloriesGoal, setCaloriesGoal] = useState(2000);
-    const [proteinGoal, setProteinGoal] = useState(100);
-    const [carbsGoal, setCarbsGoal] = useState(200);
-    const [fatGoal, setFatGoal] = useState(70);
-    const [apiKey, setApiKey] = useState("fkajfdkjaslkf");
+    const [caloriesGoal, setCaloriesGoal] = useState(store.caloriesGoal.toString());
+    const [proteinGoal, setProteinGoal] = useState(store.proteinGoal.toString());
+    const [carbsGoal, setCarbsGoal] = useState(store.carbsGoal.toString());
+    const [fatGoal, setFatGoal] = useState(store.fatGoal.toString());
+    const [apiKey, setApiKey] = useState(store.apiKey);
+
     const [intakeGoal, setIntakeGoal] = useState(store.intakeGoal.toString());
     const [wakeUpTime, setWakeUpTime] = useState(new Date(store.wakeUpTime));
     const [sleepTime, setSleepTime] = useState(new Date(store.sleepTime));
@@ -59,6 +60,11 @@ export default function Settings() {
     };
 
     const handleSave = () => {
+        store.setCaloriesGoal(parseInt(caloriesGoal) || 2000);
+        store.setProteinGoal(parseInt(proteinGoal) || 100);
+        store.setCarbsGoal(parseInt(carbsGoal) || 200);
+        store.setFatGoal(parseInt(fatGoal) || 70);
+        store.setApiKey(apiKey);
         store.setIntakeGoal(parseInt(intakeGoal) || 2000);
         store.setWakeUpTime(wakeUpTime);
         store.setSleepTime(sleepTime);
@@ -108,8 +114,8 @@ export default function Settings() {
                         style={styles.value}
                         placeholder="2000"
                         keyboardType="numeric"
-                        value={caloriesGoal.toString()}
-                        onChangeText={(text) => setCaloriesGoal(parseInt(text) || 0)}
+                        value={caloriesGoal}
+                        onChangeText={setCaloriesGoal}
                     />
                 </Card>
 
@@ -120,10 +126,10 @@ export default function Settings() {
                     </View>
                     <TextInput
                         style={styles.value}
-                        placeholder="2000"
+                        placeholder="100"
                         keyboardType="numeric"
-                        value={carbsGoal.toString()}
-                        onChangeText={(text) => setCarbsGoal(parseInt(text) || 0)}
+                        value={carbsGoal}
+                        onChangeText={setCarbsGoal}
                     />
                 </Card>
 
@@ -134,10 +140,10 @@ export default function Settings() {
                     </View>
                     <TextInput
                         style={styles.value}
-                        placeholder="2000"
+                        placeholder="100"
                         keyboardType="numeric"
-                        value={proteinGoal.toString()}
-                        onChangeText={(text) => setProteinGoal(parseInt(text) || 0)}
+                        value={proteinGoal}
+                        onChangeText={setProteinGoal}
                     />
                 </Card>
 
@@ -148,10 +154,10 @@ export default function Settings() {
                     </View>
                     <TextInput
                         style={styles.value}
-                        placeholder="2000"
+                        placeholder="70"
                         keyboardType="numeric"
-                        value={fatGoal.toString()}
-                        onChangeText={(text) => setFatGoal(parseInt(text) || 0)}
+                        value={fatGoal}
+                        onChangeText={setFatGoal}
                     />
                 </Card>
 
@@ -165,7 +171,7 @@ export default function Settings() {
                         placeholder="[GCP_API_KEY]"
                         keyboardType="default"
                         value={apiKey}
-                        onChangeText={(text) => setApiKey(text)}
+                        onChangeText={setApiKey}
                     />
                 </Card>
 

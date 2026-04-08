@@ -8,8 +8,18 @@ import { PlusCircle, Wheat, Beef, Droplets, Sparkles, MessageSquare, Check } fro
 import { Card } from '../../src/components/Card';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { BaseModal } from '../../src/components/BaseModal';
+import { useSettingsStore } from '../../src/modules/stores/settingsStore';
+import { useMealIntake } from '../../src/modules/hooks/useMealIntake';
 
 export default function MacroIntake() {
+    const caloriesGoal = useSettingsStore((state) => state.caloriesGoal)
+    const carbsGoal = useSettingsStore((state) => state.carbsGoal)
+    const proteinGoal = useSettingsStore((state) => state.proteinGoal)
+    const fatGoal = useSettingsStore((state) => state.fatGoal)
+    const apiKey = useSettingsStore((state) => state.apiKey)
+
+    const { dailyTotals, addMeal } = useMealIntake();
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
     const [calories, setCalories] = useState('');
@@ -34,8 +44,8 @@ export default function MacroIntake() {
 
                 <View style={styles.intake}>
                     <Text style={styles.watermark}>CAL</Text>
-                    <Text style={Typography.display}>1500 <Text style={Typography.body}>cal</Text></Text>
-                    <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal 2000cal</Text>
+                    <Text style={Typography.display}>{dailyTotals.calories} <Text style={Typography.body}>cal</Text></Text>
+                    <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal {caloriesGoal}cal</Text>
                 </View>
 
                 <View style={{ gap: 10, width: '100%', marginTop: 20 }}>
@@ -44,8 +54,8 @@ export default function MacroIntake() {
                             <Wheat size={22} color={Colors.primary} strokeWidth={2.5} />
                             <Text style={Typography.overline}>Carbs</Text>
                         </View>
-                        <Text style={Typography.display2}>150g<Text style={Typography.body}> / 200g</Text></Text>
-                        <ProgressBar progress={0.75} />
+                        <Text style={Typography.display2}>{dailyTotals.carbs}g<Text style={Typography.body}> / {carbsGoal}g</Text></Text>
+                        <ProgressBar progress={carbsGoal > 0 ? dailyTotals.carbs / carbsGoal : 0} />
                     </Card>
 
                     <Card style={{ gap: 10 }}>
@@ -53,8 +63,8 @@ export default function MacroIntake() {
                             <Beef size={22} color={Colors.primary} strokeWidth={2.5} />
                             <Text style={Typography.overline}>Protein</Text>
                         </View>
-                        <Text style={Typography.display2}>100g<Text style={Typography.body}> / 150g</Text></Text>
-                        <ProgressBar progress={0.67} />
+                        <Text style={Typography.display2}>{dailyTotals.protein}g<Text style={Typography.body}> / {proteinGoal}g</Text></Text>
+                        <ProgressBar progress={proteinGoal > 0 ? dailyTotals.protein / proteinGoal : 0} />
                     </Card>
 
                     <Card style={{ gap: 10 }}>
@@ -62,8 +72,8 @@ export default function MacroIntake() {
                             <Droplets size={22} color={Colors.primary} strokeWidth={2.5} />
                             <Text style={Typography.overline}>Fat</Text>
                         </View>
-                        <Text style={Typography.display2}>100g<Text style={Typography.body}> / 150g</Text></Text>
-                        <ProgressBar progress={0.67} />
+                        <Text style={Typography.display2}>{dailyTotals.fat}g<Text style={Typography.body}> / {fatGoal}g</Text></Text>
+                        <ProgressBar progress={fatGoal > 0 ? dailyTotals.fat / fatGoal : 0} />
                     </Card>
                 </View>
             </ScrollView>
@@ -166,7 +176,15 @@ export default function MacroIntake() {
                 {generatedMacros ? (<Button
                     label="Confirm"
                     onPress={() => {
+                        addMeal(
+                            description,
+                            parseInt(calories) || 0,
+                            parseInt(carbs) || 0,
+                            parseInt(protein) || 0,
+                            parseInt(fat) || 0,
+                        );
                         setIsModalVisible(false);
+                        setGeneratedMacros(false);
                     }}
                     icon={<Check size={22} color={Colors.surface} strokeWidth={2.5} />}
                 />) : (<Button
