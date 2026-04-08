@@ -1,7 +1,7 @@
 export const Colors = {
     primary: '#000000',
     secondary: '#5F5F5F',
-    tertiary: '#757575',
+    tertiary: '#adadadff',
     background: '#F9F9F9',
     surface: '#FFFFFF',
     text: '#000000',
@@ -17,6 +17,12 @@ export const Typography = {
         fontFamily: 'PlusJakartaSans_800ExtraBold',
         lineHeight: 72,
         letterSpacing: -2,
+    },
+    display2: {
+        fontSize: 40,
+        fontFamily: 'PlusJakartaSans_800ExtraBold',
+        lineHeight: 50,
+        letterSpacing: -1.5,
     },
     h1: {
         fontSize: 40,

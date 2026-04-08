@@ -13,8 +13,10 @@ import {
 } from '@expo-google-fonts/plus-jakarta-sans';
 import { Colors, Typography } from '../src/constants/theme';
 import { initializeDatabase } from '../src/modules/database/db';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 SplashScreen.preventAutoHideAsync();
+
 
 export default function Layout() {
     const [loaded, error] = useFonts({
@@ -30,15 +32,16 @@ export default function Layout() {
     }
 
     return (
-        <SQLiteProvider databaseName="ptos.db" onInit={initializeDatabase}>
-            <MainLayout />
-        </SQLiteProvider>
+        <RootSiblingParent>
+            <SQLiteProvider databaseName="ptos.db" onInit={initializeDatabase}>
+                <MainLayout />
+            </SQLiteProvider>
+        </RootSiblingParent>
     );
 }
 
 function MainLayout() {
     useEffect(() => {
-        // This only runs when both fonts are loaded AND the database is initialized
         SplashScreen.hideAsync();
     }, []);
 
@@ -67,6 +70,8 @@ function MainLayout() {
                     backgroundColor: Colors.background,
                 }
             }}
-        />
+        >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
     );
 }

@@ -27,8 +27,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({ isVisible, onClose, childr
                 onPress={onClose}
             >
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
                     style={styles.modalContainer}
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
                 >
                     <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
                         {children}
