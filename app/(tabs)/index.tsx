@@ -10,6 +10,8 @@ import { ProgressBar } from '../../src/components/ProgressBar';
 import { BaseModal } from '../../src/components/BaseModal';
 import { useSettingsStore } from '../../src/modules/stores/settingsStore';
 import { useMealIntake } from '../../src/modules/hooks/useMealIntake';
+import { extractMacros } from '../../src/modules/ai/geminiService';
+import Toast from 'react-native-root-toast';
 
 export default function MacroIntake() {
     const caloriesGoal = useSettingsStore((state) => state.caloriesGoal)
@@ -26,7 +28,31 @@ export default function MacroIntake() {
     const [carbs, setCarbs] = useState('');
     const [protein, setProtein] = useState('');
     const [fat, setFat] = useState('');
-    const [generatedMacros, setGeneratedMacros] = useState(false)
+    const [generatedMacros, setGeneratedMacros] = useState(false);
+    const [isExtracting, setIsExtracting] = useState(false);
+
+    const handleExtractMacros = async () => {
+        setIsExtracting(true);
+        try {
+            const result = await extractMacros(description, apiKey);
+            setCalories(result.calories.toString());
+            setCarbs(result.carbs.toString());
+            setProtein(result.protein.toString());
+            setFat(result.fat.toString());
+            setGeneratedMacros(true);
+        } catch (e: any) {
+            Toast.show(e.message || 'Something went wrong', {
+                duration: Toast.durations.LONG,
+                position: Toast.positions.BOTTOM,
+                backgroundColor: '#B00020',
+                textColor: '#fff',
+                shadow: false,
+                animation: true,
+            });
+        } finally {
+            setIsExtracting(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right']}>
@@ -188,12 +214,8 @@ export default function MacroIntake() {
                     }}
                     icon={<Check size={22} color={Colors.surface} strokeWidth={2.5} />}
                 />) : (<Button
-                    label="Extract macros"
-                    onPress={
-                        () => {
-                            setGeneratedMacros(true);
-                        }
-                    }
+                    label={isExtracting ? 'Extracting...' : 'Extract macros'}
+                    onPress={handleExtractMacros}
                     icon={<Sparkles size={22} color={Colors.surface} strokeWidth={2.5} />}
                 />)}
 
