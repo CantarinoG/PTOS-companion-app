@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, Platform, Switch } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import Toast from 'react-native-root-toast';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Colors, Typography } from '../../src/constants/theme';
 import { Card } from '../../src/components/Card';
 import { Button } from '../../src/components/Button';
-import { Check, Droplet, Sun, Moon, Bell } from 'lucide-react-native';
+import { Check, Droplet, Sun, Moon, Bell, Sparkles, Beef, Wheat, Droplets, LockKeyholeIcon } from 'lucide-react-native';
 import * as Notifications from 'expo-notifications';
 import { useSettingsStore } from '../../src/modules/stores/settingsStore';
 
 export default function Settings() {
     const store = useSettingsStore();
-    const router = useRouter();
 
+    const [caloriesGoal, setCaloriesGoal] = useState(2000);
+    const [proteinGoal, setProteinGoal] = useState(100);
+    const [carbsGoal, setCarbsGoal] = useState(200);
+    const [fatGoal, setFatGoal] = useState(70);
+    const [apiKey, setApiKey] = useState("fkajfdkjaslkf");
     const [intakeGoal, setIntakeGoal] = useState(store.intakeGoal.toString());
     const [wakeUpTime, setWakeUpTime] = useState(new Date(store.wakeUpTime));
     const [sleepTime, setSleepTime] = useState(new Date(store.sleepTime));
@@ -93,6 +97,80 @@ export default function Settings() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
+                <Text style={Typography.h2}>Macros</Text>
+
+                <Card>
+                    <View style={styles.row}>
+                        <Sparkles size={22} color={Colors.primary} strokeWidth={2.5} />
+                        <Text style={Typography.overline}>Calories Goal (kcal/day)</Text>
+                    </View>
+                    <TextInput
+                        style={styles.value}
+                        placeholder="2000"
+                        keyboardType="numeric"
+                        value={caloriesGoal.toString()}
+                        onChangeText={(text) => setCaloriesGoal(parseInt(text) || 0)}
+                    />
+                </Card>
+
+                <Card>
+                    <View style={styles.row}>
+                        <Wheat size={22} color={Colors.primary} strokeWidth={2.5} />
+                        <Text style={Typography.overline}>Carbs Goal (g/day)</Text>
+                    </View>
+                    <TextInput
+                        style={styles.value}
+                        placeholder="2000"
+                        keyboardType="numeric"
+                        value={carbsGoal.toString()}
+                        onChangeText={(text) => setCarbsGoal(parseInt(text) || 0)}
+                    />
+                </Card>
+
+                <Card>
+                    <View style={styles.row}>
+                        <Beef size={22} color={Colors.primary} strokeWidth={2.5} />
+                        <Text style={Typography.overline}>Protein Goal (g/day)</Text>
+                    </View>
+                    <TextInput
+                        style={styles.value}
+                        placeholder="2000"
+                        keyboardType="numeric"
+                        value={proteinGoal.toString()}
+                        onChangeText={(text) => setProteinGoal(parseInt(text) || 0)}
+                    />
+                </Card>
+
+                <Card>
+                    <View style={styles.row}>
+                        <Droplets size={22} color={Colors.primary} strokeWidth={2.5} />
+                        <Text style={Typography.overline}>Fat Goal (g/day)</Text>
+                    </View>
+                    <TextInput
+                        style={styles.value}
+                        placeholder="2000"
+                        keyboardType="numeric"
+                        value={fatGoal.toString()}
+                        onChangeText={(text) => setFatGoal(parseInt(text) || 0)}
+                    />
+                </Card>
+
+                <Card>
+                    <View style={styles.row}>
+                        <LockKeyholeIcon size={22} color={Colors.primary} strokeWidth={2.5} />
+                        <Text style={Typography.overline}>Gemini API Key</Text>
+                    </View>
+                    <TextInput
+                        style={styles.value}
+                        placeholder="[GCP_API_KEY]"
+                        keyboardType="default"
+                        value={apiKey}
+                        onChangeText={(text) => setApiKey(text)}
+                    />
+                </Card>
+
+                <Text style={Typography.h2}>Water</Text>
+
                 <Card>
                     <View style={styles.row}>
                         <Droplet size={22} color={Colors.primary} strokeWidth={2.5} />
