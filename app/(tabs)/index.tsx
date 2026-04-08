@@ -8,8 +8,15 @@ import { PlusCircle, Wheat, Beef, Droplets, Sparkles, MessageSquare, Check } fro
 import { Card } from '../../src/components/Card';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { BaseModal } from '../../src/components/BaseModal';
+import { useSettingsStore } from '../../src/modules/stores/settingsStore';
 
 export default function MacroIntake() {
+    const caloriesGoal = useSettingsStore((state) => state.caloriesGoal)
+    const carbsGoal = useSettingsStore((state) => state.carbsGoal)
+    const proteinGoal = useSettingsStore((state) => state.proteinGoal)
+    const fatGoal = useSettingsStore((state) => state.fatGoal)
+    const apiKey = useSettingsStore((state) => state.apiKey)
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
     const [calories, setCalories] = useState('');
@@ -35,7 +42,7 @@ export default function MacroIntake() {
                 <View style={styles.intake}>
                     <Text style={styles.watermark}>CAL</Text>
                     <Text style={Typography.display}>1500 <Text style={Typography.body}>cal</Text></Text>
-                    <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal 2000cal</Text>
+                    <Text style={[Typography.overline, { marginLeft: 20 }]}>Goal {caloriesGoal}cal</Text>
                 </View>
 
                 <View style={{ gap: 10, width: '100%', marginTop: 20 }}>
@@ -44,7 +51,7 @@ export default function MacroIntake() {
                             <Wheat size={22} color={Colors.primary} strokeWidth={2.5} />
                             <Text style={Typography.overline}>Carbs</Text>
                         </View>
-                        <Text style={Typography.display2}>150g<Text style={Typography.body}> / 200g</Text></Text>
+                        <Text style={Typography.display2}>150g<Text style={Typography.body}> / {carbsGoal}g</Text></Text>
                         <ProgressBar progress={0.75} />
                     </Card>
 
@@ -53,7 +60,7 @@ export default function MacroIntake() {
                             <Beef size={22} color={Colors.primary} strokeWidth={2.5} />
                             <Text style={Typography.overline}>Protein</Text>
                         </View>
-                        <Text style={Typography.display2}>100g<Text style={Typography.body}> / 150g</Text></Text>
+                        <Text style={Typography.display2}>100g<Text style={Typography.body}> / {proteinGoal}g</Text></Text>
                         <ProgressBar progress={0.67} />
                     </Card>
 
@@ -62,7 +69,7 @@ export default function MacroIntake() {
                             <Droplets size={22} color={Colors.primary} strokeWidth={2.5} />
                             <Text style={Typography.overline}>Fat</Text>
                         </View>
-                        <Text style={Typography.display2}>100g<Text style={Typography.body}> / 150g</Text></Text>
+                        <Text style={Typography.display2}>100g<Text style={Typography.body}> / {fatGoal}g</Text></Text>
                         <ProgressBar progress={0.67} />
                     </Card>
                 </View>
