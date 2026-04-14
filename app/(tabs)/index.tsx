@@ -51,6 +51,7 @@ export default function MacroIntake() {
             });
         } finally {
             setIsExtracting(false);
+            setGeneratedMacros(true);
         }
     };
 
